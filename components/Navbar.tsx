@@ -38,7 +38,7 @@ const Navbar = (props: Props) => {
           Paedia
         </b>
         <Link href="/dashboard">
-          <a href="/dashboard" style={{ marginRight: "2rem" }}>
+          <a style={{ marginRight: "2rem" }}>
             Dashboard
           </a>
         </Link>
