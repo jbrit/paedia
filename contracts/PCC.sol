@@ -1,6 +1,6 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity ^0.8.7;
 
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -39,7 +39,7 @@ contract PaediaCommunityCoin is ERC20, ERC20Permit, ERC20Votes, Ownable{
         _mint(to, amount);
     }
 
-    function burn(address account, uint256 amount) public {
+    function burn(address account, uint256 amount) public onlyOwner {
         _burn(account, amount);
     }
 
