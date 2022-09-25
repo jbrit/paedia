@@ -1,16 +1,23 @@
 import Navbar from "$components/Navbar";
 import { getCourseById } from "$constants";
+import { receiveCoin } from "actions";
+import { ethers } from "ethers";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useAccount, useProvider, useSigner } from "wagmi";
 
 const Course: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const course = getCourseById(Number(id));
   console.log(course);
+  const signer = useSigner();
+  const o = useProvider();
+  const provider = signer.data ?? o;
+  const { address } = useAccount();
   return (
     <>
       <Head>
@@ -44,7 +51,11 @@ const Course: NextPage = () => {
             ))}
             <button
               onClick={() => {
-                alert(`Claim ${course.tokenScore} PCC`);
+                receiveCoin(
+                  provider,
+                  address!,
+                  ethers.utils.parseEther("" + 300)
+                );
               }}
               style={{
                 border: "2px solid white",

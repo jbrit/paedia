@@ -12,10 +12,13 @@ import {
   GriffelRenderer,
   SSRProvider as SSRP,
   RendererProvider as RP,
-  webLightTheme,
 } from "@fluentui/react-components";
-import React from "react";
-import { type } from "os";
+import React, { useState } from "react";
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 type EnhancedAppProps = AppProps & { renderer?: GriffelRenderer };
 
@@ -44,20 +47,25 @@ type NSRP = typeof RP & React.FC<RendererProviderProps>;
 const RendererProvider = RP as NSRP;
 
 function MyApp({ Component, pageProps, renderer }: EnhancedAppProps) {
+  const [queryClient] = useState(() => new QueryClient());
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider chains={chains}>
-          <RendererProvider renderer={renderer || createDOMRenderer()}>
-            <SSRProvider>
-              <FluentProvider theme={teamsLightTheme}>
-                <Component {...pageProps} />
-              </FluentProvider>
-            </SSRProvider>
-          </RendererProvider>
-        </RainbowKitProvider>
-      </WagmiConfig>
-    </Web3ReactProvider>
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <WagmiConfig client={wagmiClient}>
+            <RainbowKitProvider chains={chains}>
+              <RendererProvider renderer={renderer || createDOMRenderer()}>
+                <SSRProvider>
+                  <FluentProvider theme={teamsLightTheme}>
+                    <Component {...pageProps} />
+                  </FluentProvider>
+                </SSRProvider>
+              </RendererProvider>
+            </RainbowKitProvider>
+          </WagmiConfig>
+        </Web3ReactProvider>
+      </Hydrate>
+    </QueryClientProvider>
   );
 }
 

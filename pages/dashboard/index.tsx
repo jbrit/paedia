@@ -7,12 +7,16 @@ import Head from "next/head";
 import router from "next/router";
 import { useAccount, useProvider, useSigner } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
+import { WorldIDWidget, VerificationResponse } from "@worldcoin/id";
+import { useState } from "react";
 
 const Home: NextPage = () => {
   const signer = useSigner();
   const o = useProvider();
   const provider = signer.data ?? o;
   const { address, isConnected, isDisconnected } = useAccount();
+  const [verificationResponse, setVerificationResponse] =
+    useState<VerificationResponse | null>(null);
   const { isSuccess, isLoading, data, isError, remove, refetch } = useQuery(
     ["sbt"],
     () => holdsSBT(provider, address!),
@@ -32,27 +36,44 @@ const Home: NextPage = () => {
       </Head>
       <Navbar />
       <main style={{ padding: "1.5rem 3rem" }}>
-        <h2>Streams</h2>
-        <hr />
-        <CardContainer>
-          <StreamCard
-            streamId={1}
-            creator="0xcD4bde67fe7C6Eb601d03a35Ea8a55eB2b136965"
-            tokenScore={100}
-          />
-          <StreamCard
-            streamId={2}
-            creator="0xFa0F0637F273a72ea73B274D51Baf0D3e31FDd8a"
-            tokenScore={25}
-          />
-        </CardContainer>
-        <h2>Courses</h2>
-        <hr />
-        <CardContainer extraColumn>
-          {courses.map((course) => (
-            <CourseCard {...course} courseId={course.id} key={course.id} />
-          ))}
-        </CardContainer>
+        {isSuccess && !data && (
+          <>
+            <WorldIDWidget
+              actionId="wid_staging_a6034cd09e88b35daf79d49a9d476182" // obtain this from developer.worldcoin.org
+              signal={address!}
+              enableTelemetry
+              onSuccess={(response) => {
+                setVerificationResponse(response);
+              }} // you'll actually want to pass the proof to the API or your smart contract
+              onError={(error: any) => console.error(error)}
+            />
+          </>
+        )}
+        {isSuccess && data && (
+          <>
+            <h2>Streams</h2>
+            <hr />
+            <CardContainer>
+              <StreamCard
+                streamId={1}
+                creator="0xcD4bde67fe7C6Eb601d03a35Ea8a55eB2b136965"
+                tokenScore={100}
+              />
+              <StreamCard
+                streamId={2}
+                creator="0xFa0F0637F273a72ea73B274D51Baf0D3e31FDd8a"
+                tokenScore={25}
+              />
+            </CardContainer>
+            <h2>Courses</h2>
+            <hr />
+            <CardContainer extraColumn>
+              {courses.map((course) => (
+                <CourseCard {...course} courseId={course.id} key={course.id} />
+              ))}
+            </CardContainer>
+          </>
+        )}
       </main>
     </>
   );
