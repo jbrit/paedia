@@ -1,11 +1,25 @@
 import CardContainer from "$components/CardContainer";
 import Navbar from "$components/Navbar";
 import { courses } from "$constants";
+import { holdsSBT } from "actions";
 import type { NextPage } from "next";
 import Head from "next/head";
 import router from "next/router";
+import { useAccount, useProvider, useSigner } from "wagmi";
+import { useQuery } from "@tanstack/react-query";
 
 const Home: NextPage = () => {
+  const signer = useSigner();
+  const o = useProvider();
+  const provider = signer.data ?? o;
+  const { address, isConnected, isDisconnected } = useAccount();
+  const { isSuccess, isLoading, data, isError, remove, refetch } = useQuery(
+    ["sbt"],
+    () => holdsSBT(provider, address!),
+    {
+      enabled: !!address,
+    }
+  );
   return (
     <>
       <Head>
@@ -21,8 +35,16 @@ const Home: NextPage = () => {
         <h2>Streams</h2>
         <hr />
         <CardContainer>
-          <StreamCard streamId={1} creator="0xcD4bde67fe7C6Eb601d03a35Ea8a55eB2b136965" tokenScore={100} />
-          <StreamCard streamId={2} creator="0xFa0F0637F273a72ea73B274D51Baf0D3e31FDd8a" tokenScore={25} />
+          <StreamCard
+            streamId={1}
+            creator="0xcD4bde67fe7C6Eb601d03a35Ea8a55eB2b136965"
+            tokenScore={100}
+          />
+          <StreamCard
+            streamId={2}
+            creator="0xFa0F0637F273a72ea73B274D51Baf0D3e31FDd8a"
+            tokenScore={25}
+          />
         </CardContainer>
         <h2>Courses</h2>
         <hr />
