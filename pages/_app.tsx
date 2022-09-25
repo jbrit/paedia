@@ -5,6 +5,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { WagmiConfig } from "wagmi";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { chains, wagmiClient } from "$utils/rainbow";
+import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -16,9 +17,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider chains={chains}>
-          <Component {...pageProps} />
-        </RainbowKitProvider>
+        <FluentProvider theme={teamsLightTheme}>
+          <RainbowKitProvider chains={chains}>
+            <Component {...pageProps} />
+          </RainbowKitProvider>
+        </FluentProvider>
       </WagmiConfig>
     </Web3ReactProvider>
   );
