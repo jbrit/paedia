@@ -2,11 +2,10 @@ import Navbar from "$components/Navbar";
 import { Button } from "@fluentui/react-components";
 import type { NextPage } from "next";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
-
+import router from "next/router";
 const Home: NextPage = () => {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Paedia</title>
         <meta
@@ -19,7 +18,13 @@ const Home: NextPage = () => {
       <main style={{ padding: "6rem 2rem", textAlign: "center" }}>
         <h1 style={{ fontSize: "4rem" }}>Paedia</h1>
         <p style={{ fontSize: "2rem" }}>Community driven Web3 Education</p>
-        <Button>Get Started</Button>
+        <Button
+          onClick={() => {
+            router.push("/dashboard");
+          }}
+        >
+          Get Started
+        </Button>
       </main>
     </div>
   );

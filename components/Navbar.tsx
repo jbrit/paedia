@@ -1,6 +1,7 @@
 import React from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
+import router  from "next/router";
 
 type Props = {};
 
@@ -9,7 +10,7 @@ const Navbar = (props: Props) => {
     <>
       <div
         style={{
-          background: "white",
+          background: "black",
           padding: "1rem",
           display: "flex",
           justifyContent: "space-between",
@@ -18,7 +19,9 @@ const Navbar = (props: Props) => {
           position: "fixed",
           top: "0",
           left: "0",
-          color: "black",
+          color: "white",
+          borderTop: "2px solid white",
+          borderBottom: "2px solid white"
         }}
       >
         <b
@@ -26,6 +29,10 @@ const Navbar = (props: Props) => {
             fontSize: "1.25rem",
             display: "inline-block",
             marginRight: "auto",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            router.push("/");
           }}
         >
           Paedia

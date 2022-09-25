@@ -21,7 +21,8 @@
       "$layouts/*": ["layouts/*"],
       "$screens/*": ["screens/*"],
       "$svgs/*": ["svgs/*"],
-      "$components/*": ["components/*"]
+      "$components/*": ["components/*"],
+      "$constants": ["constants.ts"]
     },
     "incremental": true
   },
