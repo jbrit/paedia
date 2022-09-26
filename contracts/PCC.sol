@@ -13,7 +13,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @dev ERC20 Token, Governance Token
  */
 contract PaediaCommunityCoin is ERC20, ERC20Permit, ERC20Votes, Ownable{
-    constructor() ERC20("Paedia Community Coin", "AFCT") ERC20Permit("Paedia Community Coin") {}
+    constructor() ERC20("Paedia Community Coin", "PCC") ERC20Permit("Paedia Community Coin") {}
     function _afterTokenTransfer(address from, address to, uint256 amount)
         internal
         override(ERC20, ERC20Votes)

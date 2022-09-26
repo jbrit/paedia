@@ -21,7 +21,7 @@ export const courses = [
       `When it comes to NFTs, to flip just means to buy low and sell high. It usually refers to a short-term trade. If you hold an asset for a long time before selling, that's not exactly flipping. `,
       "There's always a risk when you invest in any asset. Flipping is a relatively riskier means of earning money, but if you strategize, it can help you make a handsome amount of money in a short period of time. Remember that it's not a sure-fire way to make money, but you're likely to succeed if you tread carefully and follow a strategy.",
     ],
-    tokenScore: 300,
+    tokenScore: 450,
   },
 ];
 

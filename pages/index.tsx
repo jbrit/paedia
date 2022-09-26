@@ -24,7 +24,7 @@ const Home: NextPage = () => {
           style={{
             border: "2px solid white",
             padding: ".75rem 1rem",
-            background: "transparent",
+            background: "black",
             textTransform: "uppercase",
             cursor: "pointer",
           }}

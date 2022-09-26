@@ -15,6 +15,7 @@ contract PaediaCourse is ERC721URIStorage, Ownable {
 
     struct Course {
         uint256 score;
+        address creator;
     }
 
     mapping(address =>  mapping(uint256 => bool)) public minted;
@@ -27,7 +28,7 @@ contract PaediaCourse is ERC721URIStorage, Ownable {
 
     }
 
-    /// @dev Mints an NFT course
+    /// @dev Mints an NFT of course completion
     function completeCourse(uint256 courseId, string memory tokenURI)
         public
         returns (uint256)
@@ -39,7 +40,8 @@ contract PaediaCourse is ERC721URIStorage, Ownable {
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
 
-        pcc.mint(msg.sender, courses[courseId].score);
+        pcc.mint(msg.sender, courses[courseId].score*1e18);
+        pcc.mint(courses[courseId].creator, courses[courseId].score*1e16);
 
         _tokenIds.increment();
         minted[msg.sender][courseId] = true;
@@ -47,7 +49,7 @@ contract PaediaCourse is ERC721URIStorage, Ownable {
     }
 
     function createCourse(uint256 score) public onlyOwner {
-        courses[_courseIds.current()] = Course(score); 
+        courses[_courseIds.current()] = Course(score, msg.sender); 
         _courseIds.increment();
     }
 }

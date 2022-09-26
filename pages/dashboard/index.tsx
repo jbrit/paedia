@@ -9,6 +9,8 @@ import { useAccount, useProvider, useSigner } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { WorldIDWidget, VerificationResponse } from "@worldcoin/id";
 import { useState } from "react";
+import { nftContract } from "contract-factory";
+import { defaultAbiCoder  as abi} from "@ethersproject/abi";
 
 const Home: NextPage = () => {
   const signer = useSigner();
@@ -39,7 +41,7 @@ const Home: NextPage = () => {
         {isSuccess && !data && (
           <>
             <WorldIDWidget
-              actionId="wid_staging_a6034cd09e88b35daf79d49a9d476182" // obtain this from developer.worldcoin.org
+              actionId="wid_staging_5b1d3e9fe7676866467b8bc0054be7ff" // obtain this from developer.worldcoin.org
               signal={address!}
               enableTelemetry
               onSuccess={(response) => {
@@ -47,6 +49,43 @@ const Home: NextPage = () => {
               }} // you'll actually want to pass the proof to the API or your smart contract
               onError={(error: any) => console.error(error)}
             />
+            <div>
+              <button
+                onClick={() => {
+                  if (verificationResponse) {
+                    const { merkle_root, nullifier_hash, proof } =
+                      verificationResponse;
+                    const unpackedProof = abi.decode(["uint256[8]"], proof)[0];
+                    nftContract(provider)
+                      .mintNFT(
+                        address!,
+                        merkle_root,
+                        nullifier_hash,
+                        unpackedProof,
+                        address!,
+                        ""
+                      )
+                      .then((tx) => {
+                        alert("Minting NFT");
+                        tx.wait(3);
+                        alert("NFT successfully minted");
+                      })
+                      .catch(() => {
+                        alert("There was an error minitng your NFT");
+                      });
+                  }
+                }}
+                style={{
+                  border: "2px solid white",
+                  padding: ".75rem 1rem",
+                  background: "black",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                }}
+              >
+                Mint NFT
+              </button>
+            </div>
           </>
         )}
         {isSuccess && data && (
@@ -95,7 +134,7 @@ const StreamCard = ({ streamId, creator, tokenScore }: StreamCardProps) => (
       style={{
         border: "2px solid white",
         padding: ".5rem",
-        background: "transparent",
+        background: "black",
         width: "100%",
         textTransform: "uppercase",
         cursor: "pointer",
@@ -135,7 +174,7 @@ const CourseCard = ({
       style={{
         border: "2px solid white",
         padding: ".5rem",
-        background: "transparent",
+        background: "black",
         width: "100%",
         textTransform: "uppercase",
         cursor: "pointer",

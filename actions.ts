@@ -11,19 +11,21 @@ export const completeCourse = async (
   courseId: BigNumber,
   tokenURI: string
 ) => {
-  const transaction = await courseContract(provider).completeCourse(courseId, tokenURI);
+  const transaction = await courseContract(provider).completeCourse(
+    courseId,
+    tokenURI
+  );
   await transaction.wait(3);
   alert(`Course Completed Successfully!`);
 };
 
 export const receiveCoin = async (
-    provider: any,
-    address: string,
-    amount: BigNumber
-  ) => {
-    const transaction = await coinContract(provider).mint(address, amount);
-    await transaction.wait(3);
-    alert(`NFT sent to ${address}`);
-    alert(`300 PCC sent to ${address}`);
-  };
-  
+  provider: any,
+  address: string,
+  amount: BigNumber
+) => {
+  const transaction = await coinContract(provider).mint(address, amount);
+  await transaction.wait(3);
+  alert(`NFT sent to ${address}`);
+  alert(`300 PCC sent to ${address}`);
+};

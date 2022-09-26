@@ -1,12 +1,11 @@
 import Navbar from "$components/Navbar";
 import { getCourseById } from "$constants";
-import { receiveCoin } from "actions";
-import { ethers } from "ethers";
+import { completeCourse } from "actions";
+import { BigNumber, ethers } from "ethers";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { useAccount, useProvider, useSigner } from "wagmi";
 
 const Course: NextPage = () => {
@@ -50,26 +49,26 @@ const Course: NextPage = () => {
               </div>
             ))}
             <button
-              onClick={() => {
-                receiveCoin(
-                  provider,
-                  address!,
-                  ethers.utils.parseEther("" + 300)
-                );
+              onClick={async () => {
+                await completeCourse(provider, BigNumber.from(id), "tokenURI");
+                alert(`Course ${id} completed`);
               }}
               style={{
                 border: "2px solid white",
                 marginTop: "2rem",
                 marginBottom: "1rem",
                 padding: ".5rem 2rem",
-                background: "transparent",
+                background: "black",
                 textTransform: "uppercase",
                 cursor: "pointer",
               }}
             >
               Complete Course
             </button>
-            <div style={{fontSize: "0.8rem"}}>*Completing this course gives you {course.tokenScore} PCC and an NFT</div>
+            <div style={{ fontSize: "0.8rem" }}>
+              *Completing this course gives you {course.tokenScore} PCC and an
+              NFT
+            </div>
           </>
         )}
       </main>
