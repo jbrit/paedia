@@ -10,9 +10,16 @@ import { useQuery } from "@tanstack/react-query";
 import { WorldIDWidget, VerificationResponse } from "@worldcoin/id";
 import { useState } from "react";
 import { nftContract } from "contract-factory";
-import { defaultAbiCoder  as abi} from "@ethersproject/abi";
+import { defaultAbiCoder as abi } from "@ethersproject/abi";
+import { NFTStorage } from "nft.storage";
 
-const Home: NextPage = () => {
+const keyA =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGRFOUM2NDAyODVBNEI3MjEwN2Q2MEMwZj";
+const keyB =
+  "kzRjMxMTRCMGYxQWFiNDQiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2MzMwOTkxMTQ2NCwibmFtZSI6InB1YmxpYyJ9.b3cDjovrEwlM0RN_5GdWYP9zkEXowZp7MwDh9cnawdY";
+const gateway = "https://nftstorage.link/ipfs/";
+
+const Dashboard: NextPage = () => {
   const signer = useSigner();
   const o = useProvider();
   const provider = signer.data ?? o;
@@ -50,12 +57,34 @@ const Home: NextPage = () => {
               onError={(error: any) => console.error(error)}
             />
             <div>
+              <canvas style={{ display: "none" }} width="200" height="100" id="myCanvas"></canvas>
               <button
-                onClick={() => {
+                onClick={async () => {
                   if (verificationResponse) {
                     const { merkle_root, nullifier_hash, proof } =
                       verificationResponse;
                     const unpackedProof = abi.decode(["uint256[8]"], proof)[0];
+                    const client = new NFTStorage({ token: keyA + keyB });
+                    var canvas = document.getElementById(
+                      "myCanvas"
+                    ) as HTMLCanvasElement;
+                    var ctx = canvas!.getContext("2d");
+                    ctx!.font = "30px Arial";
+                    ctx!.fillText(address!, 10, 50);
+                    const blobFromCanvas = await new Promise<Blob>(
+                      (resolve) => {
+                        canvas!.toBlob((blob) => {
+                          resolve(blob!);
+                        });
+                      }
+                    );
+
+                    const metadata = await client.store({
+                      name: "Afriverse NFT",
+                      description:
+                        "This Afriverse NFT gives access to amazing content!",
+                      image: blobFromCanvas,
+                    });
                     nftContract(provider)
                       .mintNFT(
                         address!,
@@ -63,7 +92,7 @@ const Home: NextPage = () => {
                         nullifier_hash,
                         unpackedProof,
                         address!,
-                        ""
+                        metadata.url
                       )
                       .then((tx) => {
                         alert("Minting NFT");
@@ -185,4 +214,4 @@ const CourseCard = ({
   </div>
 );
 
-export default Home;
+export default Dashboard;
