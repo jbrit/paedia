@@ -6,7 +6,13 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { NFTStorage } from "nft.storage";
 import { useAccount, useProvider, useSigner } from "wagmi";
+
+const keyA =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGRFOUM2NDAyODVBNEI3MjEwN2Q2MEMwZj";
+const keyB =
+  "kzRjMxMTRCMGYxQWFiNDQiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2MzMwOTkxMTQ2NCwibmFtZSI6InB1YmxpYyJ9.b3cDjovrEwlM0RN_5GdWYP9zkEXowZp7MwDh9cnawdY";
 
 const Course: NextPage = () => {
   const router = useRouter();
@@ -48,9 +54,46 @@ const Course: NextPage = () => {
                 {lesson}
               </div>
             ))}
+            <canvas
+              style={{ display: "none" }}
+              width="1200"
+              height="100"
+              id="myCanvas"
+            ></canvas>
             <button
               onClick={async () => {
-                await completeCourse(provider, BigNumber.from(id), "tokenURI");
+                const canvas = document.getElementById(
+                  "myCanvas"
+                ) as HTMLCanvasElement;
+                const ctx = canvas!.getContext("2d");
+                ctx!.font = "30px Arial";
+                ctx!.textAlign = "center";
+                ctx!.fillText(
+                  address! + " -=- Course: " + course.id,
+                  canvas!.width / 2,
+                  canvas!.height / 2
+                );
+                const blobFromCanvas = await new Promise<Blob>((resolve) => {
+                  canvas!.toBlob((blob) => {
+                    resolve(blob!);
+                  });
+                });
+                const client = new NFTStorage({ token: keyA + keyB });
+                const metadata = await client.store({
+                  name: "Paedia Course NFT",
+                  description:
+                    "This Paedia NFT means that " +
+                    address! +
+                    " has completed the course " +
+                    course.name,
+                  image: blobFromCanvas,
+                });
+                console.log(metadata);
+                await completeCourse(
+                  provider,
+                  BigNumber.from(id),
+                  metadata.url
+                );
                 alert(`Course ${id} completed`);
               }}
               style={{
