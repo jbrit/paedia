@@ -57,7 +57,7 @@ const Dashboard: NextPage = () => {
               onError={(error: any) => console.error(error)}
             />
             <div>
-              <canvas style={{ display: "none" }} width="200" height="100" id="myCanvas"></canvas>
+              <canvas style={{ display: "none" }} width="1000" height="100" id="myCanvas"></canvas>
               <button
                 onClick={async () => {
                   if (verificationResponse) {
@@ -70,7 +70,8 @@ const Dashboard: NextPage = () => {
                     ) as HTMLCanvasElement;
                     var ctx = canvas!.getContext("2d");
                     ctx!.font = "30px Arial";
-                    ctx!.fillText(address!, 10, 50);
+                    ctx!.textAlign = "center";
+                    ctx!.fillText(address!, canvas!.width / 2, canvas!.height / 2);
                     const blobFromCanvas = await new Promise<Blob>(
                       (resolve) => {
                         canvas!.toBlob((blob) => {
@@ -80,11 +81,12 @@ const Dashboard: NextPage = () => {
                     );
 
                     const metadata = await client.store({
-                      name: "Afriverse NFT",
+                      name: "Paedia NFT",
                       description:
-                        "This Afriverse NFT gives access to amazing content!",
+                        "This Paedia NFT gives access to amazing content for " + address!,
                       image: blobFromCanvas,
                     });
+                    console.log(metadata.url);
                     nftContract(provider)
                       .mintNFT(
                         address!,
